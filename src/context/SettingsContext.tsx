@@ -5,6 +5,7 @@ import getColorPresets, {
   defaultPreset,
   colorPresets,
 } from "../utils/getColorPresets";
+import { Direction } from "@mui/material";
 
 const initialState = {
   ...defaultSettings,
@@ -87,14 +88,14 @@ const SettingsProvider = ({ children }: { children: ReactNode }) => {
   const onChangeDirection = (event: any) => {
     setSettings({
       ...settings,
-      themeDirection: event.target.value,
+      themeDirection: event.target.value as Direction | undefined,
     });
   };
 
   const onChangeDirectionByLang = (lang: string) => {
     setSettings({
       ...settings,
-      themeDirection: lang === "ar" ? "rtl" : "ltr",
+      themeDirection: (lang === "ar" ? "rtl" : "ltr") as Direction | undefined,
     });
   };
 
