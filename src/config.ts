@@ -2,12 +2,13 @@ import { enUS, frFR, zhCN, viVN, arSD, faIR } from "@mui/material/locale";
 
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
+import { Direction } from "@mui/material";
 
 export const BASE_URL = "http://localhost:3001";
 
 export const defaultSettings = {
   themeMode: "light",
-  themeDirection: "ltr",
+  themeDirection: "ltr" as Direction | undefined,
   themeContrast: "default",
   themeLayout: "horizontal",
   themeColorPresets: "default",
