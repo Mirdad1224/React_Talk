@@ -1,6 +1,5 @@
+import { PaletteMode } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-
-// ----------------------------------------------------------------------
 
 function createGradient(color1: string, color2: string) {
   return `linear-gradient(to bottom, ${color1}, ${color2})`;
@@ -113,14 +112,14 @@ const COMMON = {
 const palette = {
   light: {
     ...COMMON,
-    mode: "light",
+    mode: "light" as PaletteMode | undefined,
     text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
     background: { paper: "#fff", default: "#fff", neutral: GREY[200] },
     action: { active: GREY[600], ...COMMON.action },
   },
   dark: {
     ...COMMON,
-    mode: "dark",
+    mode: "dark" as PaletteMode | undefined,
     text: { primary: "#fff", secondary: GREY[500], disabled: GREY[600] },
     background: { paper: GREY[800], default: GREY[900], neutral: GREY[500_16] },
     action: { active: GREY[500], ...COMMON.action },
