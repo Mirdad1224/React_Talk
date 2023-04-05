@@ -1,4 +1,6 @@
+import { TypographyOptions } from "@mui/material/styles/createTypography";
 import { pxToRem, responsiveFontSizes } from "../utils/getFontValue";
+import { Palette } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -86,6 +88,6 @@ const typography = {
   article: {
     fontWeight: 700,
   },
-};
+} as TypographyOptions | ((palette: Palette) => TypographyOptions);
 
 export default typography;
