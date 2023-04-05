@@ -1,4 +1,4 @@
-import { alpha } from "@mui/material/styles";
+import { Shadows, alpha } from "@mui/material/styles";
 
 import palette from "./palette";
 
@@ -7,7 +7,7 @@ import palette from "./palette";
 const LIGHT_MODE = palette.light.grey[500];
 const DARK_MODE = "#000000";
 
-const createShadow = (color: string) => {
+const createShadow = (color: string): Shadows => {
   const transparent1 = alpha(color, 0.2);
   const transparent2 = alpha(color, 0.14);
   const transparent3 = alpha(color, 0.12);
