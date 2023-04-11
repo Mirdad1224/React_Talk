@@ -17,7 +17,7 @@ const initialState = {
   // Direction
   onToggleDirection: () => {},
   onChangeDirection: () => {},
-  onChangeDirectionByLang: () => {},
+  onChangeDirectionByLang: (lang: string) => {},
 
   // Layout
   onToggleLayout: () => {},
