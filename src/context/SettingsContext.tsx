@@ -7,6 +7,11 @@ import getColorPresets, {
 } from "../utils/getColorPresets";
 import { Direction } from "@mui/material";
 
+type ColorOption = {
+  name: string;
+  value: string;
+};
+
 const initialState = {
   ...defaultSettings,
 
@@ -30,7 +35,7 @@ const initialState = {
   // Color
   onChangeColor: () => {},
   setColor: defaultPreset,
-  colorOption: [],
+  colorOption: [] as ColorOption[],
 
   // Stretch
   onToggleStretch: () => {},
