@@ -7,6 +7,12 @@ declare module "@mui/material/styles" {
   interface Theme {
     customShadows?: customShadows;
   }
+
+  interface TypeBackground {
+    paper: string;
+    default: string;
+    neutral: string;
+  }
 }
 
 declare module "@mui/material" {
