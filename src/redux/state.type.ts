@@ -1,3 +1,12 @@
+export interface IDirectMessage {
+  id: string;
+  type: string;
+  subtype: string;
+  message: string;
+  incoming: boolean;
+  outgoing: boolean;
+}
+
 export interface IAppState {
   sideBar: {
     open: boolean;
