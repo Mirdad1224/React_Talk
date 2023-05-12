@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { faker } from "@faker-js/faker";
 
-import { IConversationState } from "./../state.type";
+import { IConversationState, IDirectMessage } from "./../state.type";
 import { AppDispatch, RootState } from "./../store";
 
 const user_id = window.localStorage.getItem("user_id");
@@ -150,7 +150,7 @@ export const FetchCurrentMessages = ({ messages }: { messages: any }) => {
   };
 };
 
-export const AddDirectMessage = (message: { messages: any }) => {
+export const AddDirectMessage = (message: IDirectMessage) => {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.addDirectMessage({ message }));
   };
