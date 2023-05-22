@@ -1,4 +1,6 @@
-export default function Accordion(theme: any) {
+import { CustomTheme } from "@mui/material";
+
+export default function Accordion(theme: CustomTheme) {
   return {
     MuiAccordion: {
       styleOverrides: {
