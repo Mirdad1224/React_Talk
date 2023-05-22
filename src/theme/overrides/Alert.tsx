@@ -1,9 +1,12 @@
+import { CustomTheme } from "@mui/material";
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "./CustomIcons";
 
-export default function Alert(theme: any) {
-  const isLight = theme.palette.mode === "light";
+type MyColor = "info" | "success" | "error" | "warning";
 
-  const standardStyle = (color: string) => ({
+export default function Alert(theme: CustomTheme) {
+  const isLight = theme.palette!.mode === "light";
+
+  const standardStyle = (color: MyColor) => ({
     color: theme.palette[color][isLight ? "darker" : "lighter"],
     backgroundColor: theme.palette[color][isLight ? "lighter" : "darker"],
     "& .MuiAlert-icon": {
@@ -11,11 +14,11 @@ export default function Alert(theme: any) {
     },
   });
 
-  const filledStyle = (color: string) => ({
+  const filledStyle = (color: MyColor) => ({
     color: theme.palette[color].contrastText,
   });
 
-  const outlinedStyle = (color: string) => ({
+  const outlinedStyle = (color: MyColor) => ({
     color: theme.palette[color][isLight ? "darker" : "lighter"],
     border: `solid 1px ${theme.palette[color][isLight ? "light" : "dark"]}`,
     backgroundColor: theme.palette[color][isLight ? "lighter" : "darker"],
