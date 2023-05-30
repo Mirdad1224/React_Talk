@@ -1,4 +1,6 @@
-export default function LoadingButton() {
+import { CustomTheme } from "@mui/material";
+
+export default function LoadingButton(theme: CustomTheme) {
   return {
     MuiLoadingButton: {
       styleOverrides: {

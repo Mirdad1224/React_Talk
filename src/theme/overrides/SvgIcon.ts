@@ -1,4 +1,6 @@
-export default function SvgIcon() {
+import { CustomTheme } from "@mui/material";
+
+export default function SvgIcon(theme: CustomTheme) {
   return {
     MuiSvgIcon: {
       styleOverrides: {
