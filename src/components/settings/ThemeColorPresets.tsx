@@ -4,7 +4,7 @@ import {
   ThemeProvider,
   createTheme,
   useTheme,
-  ThemeOptions,
+  CustomThemeOptions,
 } from "@mui/material/styles";
 import useSettings from "../../hooks/useSettings";
 import componentsOverride from "../../theme/overrides";
@@ -14,15 +14,15 @@ export default function ThemeColorPresets({
 }: {
   children: ReactNode;
 }) {
-  const defaultTheme: ThemeOptions = useTheme();
+  const defaultTheme: CustomThemeOptions = useTheme();
 
   const { setColor } = useSettings();
 
-  const themeOptions: ThemeOptions = useMemo(
+  const themeOptions: CustomThemeOptions = useMemo(
     () => ({
       ...defaultTheme,
       palette: {
-        ...defaultTheme.palette,
+        ...defaultTheme.palette!,
         primary: setColor,
       },
       customShadows: {

@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Grid, RadioGroup, CardActionArea } from "@mui/material";
+import { Grid, RadioGroup, CardActionArea, CustomTheme } from "@mui/material";
 import useSettings from "../../../hooks/useSettings";
 import Iconify from "../../Iconify";
 import BoxMask from "./BoxMask";
@@ -33,7 +33,7 @@ export default function SettingDirection() {
                 sx={{
                   ...(isSelected && {
                     color: "primary.main",
-                    boxShadow: (theme) => theme.customShadows.z20,
+                    boxShadow: (theme: CustomTheme) => theme.customShadows.z20,
                   }),
                 }}
               >

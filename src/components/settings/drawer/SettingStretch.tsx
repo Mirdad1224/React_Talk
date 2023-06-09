@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { CardActionArea, Stack } from "@mui/material";
+import { CardActionArea, CustomTheme, Stack } from "@mui/material";
 import useSettings from "../../../hooks/useSettings";
 import Iconify from "../../Iconify";
 
@@ -40,7 +40,7 @@ export default function SettingStretch() {
           borderRadius: 1,
           color: "action.active",
           bgcolor: "background.default",
-          boxShadow: (theme) => theme.customShadows.z12,
+          boxShadow: (theme: CustomTheme) => theme.customShadows.z12,
           transition: (theme) => theme.transitions.create("width"),
           ...(themeStretch && {
             width: 1,
