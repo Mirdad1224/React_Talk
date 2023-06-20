@@ -42,7 +42,11 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer;
 
-export function NewPassword(formValues: {}) {
+export function NewPassword(formValues: {
+  password: string;
+  passwordConfirm: string;
+  token: string;
+}) {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
 
@@ -83,7 +87,7 @@ export function NewPassword(formValues: {}) {
   };
 }
 
-export function ForgotPassword(formValues: {}) {
+export function ForgotPassword(formValues: { email: string }) {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
 
@@ -119,7 +123,7 @@ export function ForgotPassword(formValues: {}) {
   };
 }
 
-export function LoginUser(formValues: {}) {
+export function LoginUser(formValues: { email: string; password: string }) {
   return async (dispatch: AppDispatch, getState: RootState) => {
     // Make API call here
 
@@ -171,7 +175,12 @@ export function LogoutUser() {
   };
 }
 
-export function RegisterUser(formValues: { email: string }) {
+export function RegisterUser(formValues: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}) {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
 
@@ -215,7 +224,10 @@ export function RegisterUser(formValues: { email: string }) {
   };
 }
 
-export function VerifyEmail(formValues: {}) {
+export function VerifyEmail(formValues: {
+  email: string;
+  otp: number | string;
+}) {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
 
