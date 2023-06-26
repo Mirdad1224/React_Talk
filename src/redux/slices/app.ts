@@ -1,10 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
-
+import {
+  AnyAction,
+  Dispatch,
+  ThunkDispatch,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { IAppState } from "./../state.type";
 import { AppDispatch, RootState } from "./../store";
 import axios from "../../utils/axios";
+import { v4 } from "uuid";
+import S3 from "../../utils/s3";
+import { S3_BUCKET_NAME } from "../../config";
 
 const initialState: IAppState = {
+  user: {},
   sideBar: {
     open: false,
     type: "CONTACT", // can be CONTACT, STARRED, SHARED
@@ -21,12 +29,22 @@ const initialState: IAppState = {
   friendRequests: [], // all friend requests
   chat_type: null,
   room_id: null,
+  call_logs: [],
 };
 
 const slice = createSlice({
   name: "app",
   initialState,
   reducers: {
+    fetchCallLogs(state, action) {
+      state.call_logs = action.payload.call_logs;
+    },
+    fetchUser(state, action) {
+      state.user = action.payload.user;
+    },
+    updateUser(state, action) {
+      state.user = action.payload.user;
+    },
     // Toggle Sidebar
     toggleSideBar(state) {
       state.sideBar.open = !state.sideBar.open;
@@ -91,7 +109,10 @@ export const showSnackbar =
   };
 
 export function ToggleSidebar() {
-  return async (dispatch: AppDispatch, getState: RootState) => {
+  return async (
+    dispatch: ThunkDispatch<any, undefined, AnyAction> & Dispatch<AnyAction>,
+    getState: RootState
+  ) => {
     dispatch(slice.actions.toggleSideBar());
   };
 }
@@ -109,16 +130,12 @@ export function UpdateTab(tab: number) {
 export function FetchUsers() {
   return async (dispatch: AppDispatch, getState: RootState) => {
     await axios
-      .get(
-        "/user/get-users",
-
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getState().auth.token}`,
-          },
-        }
-      )
+      .get("/user/get-users", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getState().auth.token}`,
+        },
+      })
       .then((response) => {
         console.log(response);
         dispatch(slice.actions.updateUsers({ users: response.data.data }));
@@ -175,8 +192,93 @@ export function FetchFriendRequests() {
   };
 }
 
-export const SelectConversation = ({ room_id }: { room_id: string }) => {
+export const SelectConversation = ({ room_id }: { room_id: number }) => {
   return async (dispatch: AppDispatch, getState: RootState) => {
     dispatch(slice.actions.selectConversation({ room_id }));
+  };
+};
+
+export const FetchCallLogs = () => {
+  return async (dispatch: AppDispatch, getState: RootState) => {
+    axios
+      .get("/user/get-call-logs", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getState().auth.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch(
+          slice.actions.fetchCallLogs({ call_logs: response.data.data })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+export const FetchUserProfile = () => {
+  return async (dispatch: AppDispatch, getState: RootState) => {
+    axios
+      .get("/user/get-me", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getState().auth.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        dispatch(slice.actions.fetchUser({ user: response.data.data }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+export const UpdateUserProfile = (formValues: any) => {
+  return async (dispatch: AppDispatch, getState: RootState) => {
+    const file = formValues.avatar;
+
+    const key = v4();
+
+    try {
+      S3.getSignedUrl(
+        "putObject",
+        { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
+        async (_err, presignedURL) => {
+          await fetch(presignedURL, {
+            method: "PUT",
+
+            body: file,
+
+            headers: {
+              "Content-Type": file.type,
+            },
+          });
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    axios
+      .patch(
+        "/user/update-me",
+        { ...formValues, avatar: key },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        dispatch(slice.actions.updateUser({ user: response.data.data }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 };
