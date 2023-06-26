@@ -1,28 +1,60 @@
 import { useEffect } from "react";
 import { Stack } from "@mui/material";
 import { Navigate, Outlet } from "react-router-dom";
-import { AnyAction } from "@reduxjs/toolkit";
 import useResponsive from "../../hooks/useResponsive";
 import SideNav from "./SideNav";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation, showSnackbar } from "../../redux/slices/app";
+import {
+  FetchUserProfile,
+  SelectConversation,
+  showSnackbar,
+} from "../../redux/slices/app";
 import { socket, connectSocket } from "../../socket";
 import {
   UpdateDirectConversation,
   AddDirectConversation,
   AddDirectMessage,
 } from "../../redux/slices/conversation";
+import AudioCallNotification from "../../sections/dashboard/audio/CallNotification";
+import VideoCallNotification from "../../sections/dashboard/video/VideoNotification";
+import {
+  PushToAudioCallQueue,
+  UpdateAudioCallDialog,
+} from "../../redux/slices/audioCall";
+import AudioCallDialog from "../../sections/dashboard/audio/CallDialog";
+import VideoCallDialog from "../../sections/dashboard/video/VideoDialog";
+import {
+  PushToVideoCallQueue,
+  UpdateVideoCallDialog,
+} from "../../redux/slices/videoCall";
 import { RootState } from "../../redux/store";
+import { AnyAction } from "@reduxjs/toolkit";
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
+  const dispatch = useDispatch();
+  const { user_id } = useSelector((state: RootState) => state.auth);
+  const { open_audio_notification_dialog, open_audio_dialog } = useSelector(
+    (state: RootState) => state.audioCall
+  );
+  const { open_video_notification_dialog, open_video_dialog } = useSelector(
+    (state: RootState) => state.videoCall
+  );
   const { isLoggedIn } = useSelector((state: RootState) => state.auth);
   const { conversations, current_conversation } = useSelector(
     (state: RootState) => state.conversation.direct_chat
   );
-  const dispatch = useDispatch();
 
-  const user_id = window.localStorage.getItem("user_id");
+  useEffect(() => {
+    dispatch(FetchUserProfile() as unknown as AnyAction);
+  }, [dispatch]);
+
+  const handleCloseAudioDialog = () => {
+    dispatch(UpdateAudioCallDialog({ state: false }) as unknown as AnyAction);
+  };
+  const handleCloseVideoDialog = () => {
+    dispatch(UpdateVideoCallDialog({ state: false }) as unknown as AnyAction);
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -33,11 +65,21 @@ const DashboardLayout = () => {
         }
       };
 
-      //window.onload();
+      // window.onload();
 
       if (!socket) {
-        connectSocket(user_id!);
+        connectSocket(user_id);
       }
+
+      socket.on("audio_call_notification", (data) => {
+        // TODO => dispatch an action to add this in call_queue
+        dispatch(PushToAudioCallQueue(data) as unknown as AnyAction);
+      });
+
+      socket.on("video_call_notification", (data) => {
+        // TODO => dispatch an action to add this in call_queue
+        dispatch(PushToVideoCallQueue(data) as unknown as AnyAction);
+      });
 
       socket.on("new_message", (data) => {
         const message = data.message;
@@ -58,32 +100,6 @@ const DashboardLayout = () => {
       });
 
       socket.on("start_chat", (data) => {
-        console.log(data);
-        // add / update to conversation list
-        const existing_conversation = conversations.find(
-          (el: any) => el.id === data._id
-        );
-        if (existing_conversation) {
-          // update direct conversation
-          dispatch(
-            UpdateDirectConversation({
-              conversation: data,
-            }) as unknown as AnyAction
-          );
-        } else {
-          // add direct conversation
-          dispatch(
-            AddDirectConversation({
-              conversation: data,
-            }) as unknown as AnyAction
-          );
-        }
-        dispatch(
-          SelectConversation({ room_id: data._id }) as unknown as AnyAction
-        );
-      });
-
-      socket.on("open_chat", (data) => {
         console.log(data);
         // add / update to conversation list
         const existing_conversation = conversations.find(
@@ -142,11 +158,12 @@ const DashboardLayout = () => {
       socket?.off("new_friend_request");
       socket?.off("request_accepted");
       socket?.off("request_sent");
-      socket?.off("open_chat");
       socket?.off("start_chat");
       socket?.off("new_message");
+      socket?.off("audio_call_notification");
     };
-  }, [isLoggedIn, user_id, dispatch, conversations, current_conversation]);
+    //eslint-disable-next-line
+  }, [isLoggedIn, socket]);
 
   if (!isLoggedIn) {
     return <Navigate to={"/auth/login"} />;
@@ -162,6 +179,30 @@ const DashboardLayout = () => {
 
         <Outlet />
       </Stack>
+      {open_audio_notification_dialog && (
+        <AudioCallNotification
+          open={open_audio_notification_dialog}
+          handleClose={handleCloseAudioDialog}
+        />
+      )}
+      {open_audio_dialog && (
+        <AudioCallDialog
+          open={open_audio_dialog}
+          handleClose={handleCloseAudioDialog}
+        />
+      )}
+      {open_video_notification_dialog && (
+        <VideoCallNotification
+          open={open_video_notification_dialog}
+          handleClose={handleCloseVideoDialog}
+        />
+      )}
+      {open_video_dialog && (
+        <VideoCallDialog
+          open={open_video_dialog}
+          handleClose={handleCloseVideoDialog}
+        />
+      )}
     </>
   );
 };
