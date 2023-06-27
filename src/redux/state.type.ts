@@ -8,6 +8,7 @@ export interface IDirectMessage {
 }
 
 export interface IAppState {
+  user: any;
   sideBar: {
     open: boolean;
     type: string;
@@ -16,7 +17,7 @@ export interface IAppState {
   tab: 0 | 1 | 2 | 3;
   snackbar: {
     open: boolean | null;
-    severity: any;
+    severity: string | null;
     message: string | null;
   };
   users: any[];
@@ -24,6 +25,7 @@ export interface IAppState {
   friendRequests: any[];
   chat_type: string | null;
   room_id: string | null;
+  call_logs: any[];
 }
 
 export interface IAuthState {
@@ -43,4 +45,18 @@ export interface IConversationState {
     current_messages: any[];
   };
   group_chat: any;
+}
+
+export interface IAudioCallState {
+  open_audio_dialog: boolean;
+  open_audio_notification_dialog: boolean;
+  call_queue: any[]; // can have max 1 call at any point of time
+  incoming: boolean;
+}
+
+export interface IVideoCallState {
+  open_video_dialog: boolean;
+  open_video_notification_dialog: boolean;
+  call_queue: any[]; // can have max 1 call at any point of time
+  incoming: boolean;
 }
